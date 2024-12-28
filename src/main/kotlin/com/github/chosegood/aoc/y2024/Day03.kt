@@ -12,7 +12,28 @@ class Day03 : AdventOfCode {
             .sumOf { it.groupValues[1].toLong() * it.groupValues[2].toLong() }
     }
 
-    override fun part2(input: List<String>): Long = TODO("Not yet implemented")
+    override fun part2(input: List<String>): Long {
+        val regex = """mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)""".toRegex()
+
+        var acc = 0L
+        var enabled = true
+        input.forEach { line ->
+            val matches: Sequence<MatchResult> = regex.findAll(line)
+            for (match in matches) {
+                if (match.value == "do()") {
+                    enabled = true
+                } else if (match.value == "don't()") {
+                    enabled = false
+                } else {
+                    if (enabled) {
+                        acc += match.groupValues[1].toLong() * match.groupValues[2].toLong()
+                    }
+                }
+            }
+        }
+
+        return acc
+    }
 }
 
 fun main() {
