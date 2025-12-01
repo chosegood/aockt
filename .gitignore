@@ -49,3 +49,5 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+/src/main/resources
