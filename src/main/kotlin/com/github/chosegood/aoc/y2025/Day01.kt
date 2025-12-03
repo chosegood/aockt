@@ -4,8 +4,8 @@ import com.github.chosegood.aoc.AdventOfCode
 import com.github.chosegood.aoc.InputReader
 
 fun main() {
-    println(Day01().part1(InputReader.readInput("D0101_input.txt")))  //1191
-    println(Day01().part2(InputReader.readInput("D0101_input.txt"))) //6858
+    println("Part1: " + Day01().part1(InputReader.readInput("D0101_input.txt")))
+    println("Part2: " + Day01().part2(InputReader.readInput("D0101_input.txt")))
 }
 
 class Day01 : AdventOfCode {
