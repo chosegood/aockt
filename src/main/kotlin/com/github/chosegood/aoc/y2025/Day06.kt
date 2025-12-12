@@ -12,11 +12,14 @@ class Day06 : AdventOfCode {
 
 
     override fun part1(input: List<String>): Long {
-        val rows = input
-            .map { it.split(" ")
-            .filter(String::isNotBlank) }
-        val operators = rows.last()
-        val values = rows.dropLast(1).map { it: List<String> -> it.map { it.toLong() } }
+        val operators = input.last().split(" ").filter(String::isNotBlank)
+        val values = input.dropLast(1)
+            .map {
+                it.split(" ")
+                    .filter(String::isNotBlank)
+                    .map(String::toLong)
+            }
+
         return operators.mapIndexed { index, operator ->
             when (operator) {
                 "*" -> values.map { it.getOrElse(index) { 0 } }.reduce { acc, value -> acc * value }
@@ -27,7 +30,37 @@ class Day06 : AdventOfCode {
     }
 
     override fun part2(input: List<String>): Long {
-        return 0L
+        val maxCols = input.maxOfOrNull { it.length } ?: 0
+
+        val columnAsNumbers = (0 until maxCols).map { col ->
+            val trim = input.dropLast(1)
+                .mapNotNull { row -> row.getOrNull(col) }
+                .joinToString("")
+                .trim()
+            if (trim.isEmpty()) 0 else trim.toLong()
+        }
+
+        val operatorIndexes: List<Int> = input.last()
+            .mapIndexedNotNull { index, ch -> if (ch == '+' || ch == '*') index else null }
+
+        val columnGroups: List<List<Long>> = operatorIndexes.windowed(2, step = 1, partialWindows = true)
+            .map { win ->
+                if (win.size == 2) {
+                    columnAsNumbers.subList(win.first(), win.last() - 1)
+                } else {
+                    columnAsNumbers.subList(win.first(), maxCols)
+                }
+            }
+
+        return input.last()
+            .filter { it.toString().isNotBlank() }
+            .mapIndexed { index, operator ->
+                when (operator) {
+                    '*' -> columnGroups[index].reduce { acc, value -> acc * value }
+                    '+' -> columnGroups[index].sumOf { it }
+                    else -> 0L
+                }
+            }.sum()
     }
 
 }
